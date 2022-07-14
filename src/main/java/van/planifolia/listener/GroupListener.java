@@ -22,6 +22,8 @@ public class GroupListener {
     public UrlRequestService urlRequestService;
     /**
      * 复读的listener，做为示范
+     * @Filter 消息过滤器注解，其中value作为方法触发关键字，matchType作为匹配形式，具体用法建议去看框架作者的api文档
+     * URL:https://www.yuque.com/simpler-robot/simpler-robot-doc/wyt74o
      * @param groupMsg 消息容器
      * @param sender 送信器
      */
