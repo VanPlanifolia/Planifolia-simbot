@@ -10,8 +10,10 @@ import van.planifolia.util.Constant;
  * <p>
  * 此处的注解配置了两个配置文件：
  * <ul>
- *     <li>simbot.yml</li>
+ *     <li>../simbot.yml</li>
+ *     上面的文件是作为正式部署的bot账号密码文件，需要注意的是必须要在jar包的同级下也就是这个文件要与jar包平行
  *     <li>simbot-dev.yml</li>
+ *     这个文件是最为测试环境的bot账号密码文件。
  * </ul>
  * 其中，{@code simbot-dev.yml} 是一个测试环境的配置文件，只有当启动参数中存在 {@code --Sdev} 的时候才会被使用。
  * 如果你不需要一些特殊的配置文件，那么可以直接使用 {@code @SimbotApplication}.
@@ -22,7 +24,7 @@ import van.planifolia.util.Constant;
  */
 
 @SimbotApplication({
-        @SimbotResource(value = "simbot.yml", orIgnore = true),
+        @SimbotResource(value = "../simbot.yml", orIgnore = true),
         @SimbotResource(value = "simbot-dev.yml", orIgnore = true, command = "dev"),
 })
 public class SimbotExampleApplication {
@@ -39,6 +41,4 @@ public class SimbotExampleApplication {
         Constant.sender=simbotContext.getBotManager().getDefaultBot().getSender();
         System.out.println(Constant.sender);
     }
-
-
 }
