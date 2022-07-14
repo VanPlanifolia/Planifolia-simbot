@@ -1,6 +1,5 @@
 package van.planifolia.service;
 
-import love.forte.common.ioc.annotation.Beans;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.Sender;
 

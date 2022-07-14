@@ -1,19 +1,27 @@
 package van.planifolia.service;
 
 import love.forte.common.ioc.annotation.Beans;
+import love.forte.common.ioc.annotation.Depend;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.Sender;
+import van.planifolia.action.UrlRequestAction;
 
 /**
- * Url请求service的具体实现类，里面如果涉及dao操作则直接调用dao否则直接实现对应功能
+ * Url请求service的具体实现类,这个模块只负责调用action与dao来完成请求。
  * @author Van.Planifolia
  */
 @Beans
 public class UrlRequestServiceImpl implements UrlRequestService{
+    //注入action的依赖
+    @Depend
+    UrlRequestAction urlRequestAction;
 
+    /**
+     * 随机音乐
+     */
     @Override
     public void getRandomMusic(GroupMsg groupMsg, Sender sender) {
-
+        urlRequestAction.getRandomMusic(groupMsg, sender);
     }
 
     @Override
