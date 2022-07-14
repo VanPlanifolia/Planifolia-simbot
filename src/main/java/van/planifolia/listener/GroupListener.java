@@ -8,6 +8,9 @@ import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.Sender;
 import love.forte.simbot.filter.MatchType;
 import van.planifolia.service.UrlRequestService;
+import van.planifolia.util.Constant;
+
+import javax.swing.filechooser.FileSystemView;
 
 /**
  * 群组监听的类，监听群组中的消息去调用对应的service相当于controller。
@@ -17,7 +20,7 @@ import van.planifolia.service.UrlRequestService;
  */
 @Beans
 public class GroupListener {
-    //
+    //注入service层
     @Depend
     public UrlRequestService urlRequestService;
     /**
@@ -32,4 +35,16 @@ public class GroupListener {
     public void repeat(GroupMsg groupMsg, Sender sender){
         urlRequestService.repeat(groupMsg, sender);
     }
+
+    /**
+     * 请求随机音乐的listen
+     */
+    @OnGroup
+    @Filter(atBot = true,value = "来首音乐",matchType = MatchType.CONTAINS)
+    public void RandomMusic(GroupMsg groupMsg,Sender sender){
+        if (Constant.parentPath==null){ Constant.parentPath = FileSystemView.getFileSystemView()
+                    .getHomeDirectory().getAbsolutePath(); }
+        urlRequestService.getRandomMusic(groupMsg, sender);
+    }
+
 }

@@ -5,6 +5,8 @@ import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import van.planifolia.util.Constant;
 
+import java.util.Objects;
+
 /**
  * Planifolia-simbot 的启动类，使用了ForteScarlet提供的simbot框架特此感谢。
  * <p>
@@ -28,7 +30,6 @@ import van.planifolia.util.Constant;
         @SimbotResource(value = "simbot-dev.yml", orIgnore = true, command = "dev"),
 })
 public class SimbotExampleApplication {
-
     public static void main(String[] args) {
         /*
             run方法的第一个参数是一个标注了@SimbotApplication注解的启动类。
@@ -41,4 +42,5 @@ public class SimbotExampleApplication {
         Constant.sender=simbotContext.getBotManager().getDefaultBot().getSender();
         System.out.println(Constant.sender);
     }
+    
 }

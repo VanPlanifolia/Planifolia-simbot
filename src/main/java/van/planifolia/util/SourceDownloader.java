@@ -25,7 +25,7 @@ public class SourceDownloader {
             //文件名字
             Random R = new Random();
             int random = R.nextInt(1000);
-            filePath = "../image/" + random + ".png";
+            filePath = Constant.parentPath+"\\"+ random + ".png";
             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(filePath));
             byte[] buffer = new byte[1024 * 8];
             int count;
@@ -59,7 +59,7 @@ public class SourceDownloader {
             con.setConnectTimeout(10 * 1000);
             BufferedInputStream in = new BufferedInputStream(con.getInputStream());
             //文件名字
-            filePath = "../image/" + filename + ".png";
+            filePath = Constant.parentPath+"\\"+  filename + ".png";
             //使用任意一个流打开目标文件
             BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(filePath));
             //文件写入三部曲，创建缓存区，while循环写入，关闭流
@@ -99,7 +99,7 @@ public class SourceDownloader {
         //缓冲流
         BufferedInputStream in = new BufferedInputStream(con.getInputStream());
         //文件名字
-        filePath = "../music/" +musName+"-"+musArt + ".mp3";
+        filePath = Constant.parentPath+"\\"+musName+"-"+musArt + ".mp3";
         //字节缓冲流下写出文件
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(filePath));
         byte[] buffer = new byte[1024*8];

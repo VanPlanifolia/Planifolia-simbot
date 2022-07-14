@@ -16,4 +16,6 @@ public class Constant {
     public static List<String> groupList=new ArrayList<>();
     //送信器的常量
     public static BotSender sender;
+    //文件目录的路径
+    public static String parentPath;
 }
