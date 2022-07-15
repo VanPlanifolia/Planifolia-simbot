@@ -13,9 +13,7 @@ import van.planifolia.util.ApiEnum;
 import van.planifolia.util.HttpClient;
 import van.planifolia.util.SourceDownloader;
 import van.planifolia.util.VoiceSender;
-
 import java.io.File;
-import java.util.Arrays;
 
 /**
  * Action类的具体实现类，里面用于处理Listener中的请求并且发送消息.
