@@ -4,6 +4,7 @@ import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.ioc.annotation.Depend;
 import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.sender.Sender;
+import love.forte.simbot.api.sender.Setter;
 import van.planifolia.action.UrlRequestAction;
 
 /**
@@ -16,9 +17,6 @@ public class UrlRequestServiceImpl implements UrlRequestService{
     @Depend
     UrlRequestAction urlRequestAction;
 
-    /**
-     * 随机音乐
-     */
     @Override
     public void getRandomMusic(GroupMsg groupMsg, Sender sender) {
         urlRequestAction.getRandomMusic(groupMsg, sender);
@@ -27,5 +25,40 @@ public class UrlRequestServiceImpl implements UrlRequestService{
     @Override
     public void repeat(GroupMsg groupMsg, Sender sender) {
         sender.sendGroupMsg(groupMsg.getGroupInfo(),groupMsg.getMsgContent());
+    }
+
+    @Override
+    public void getRandomSt(GroupMsg groupMsg, Sender sender, Setter setter) {
+        urlRequestAction.getRandomSt(groupMsg,sender,setter);
+    }
+
+    @Override
+    public void getRandomImageECY(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.getRandomImageECY(groupMsg,sender);
+    }
+
+    @Override
+    public void getRandomImageMen(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.getRandomImageMen(groupMsg, sender);
+    }
+
+    @Override
+    public void getRandomHitokoto(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.getRandomHitokoto(groupMsg,sender);
+    }
+
+    @Override
+    public void getTodayForHis(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.getTodayForHis(groupMsg, sender);
+    }
+
+    @Override
+    public void getRandomImageTx(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.getRandomImageTx(groupMsg, sender);
+    }
+
+    @Override
+    public void getDailyFortune(Sender sender, GroupMsg groupMsg) {
+        urlRequestAction.getDailyFortune(groupMsg, sender);
     }
 }

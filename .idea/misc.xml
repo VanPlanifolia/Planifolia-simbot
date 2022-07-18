@@ -5,6 +5,9 @@
       <item index="0" class="java.lang.String" itemvalue="love.forte.common.ioc.annotation.Beans" />
       <item index="1" class="java.lang.String" itemvalue="love.forte.simbot.annotation.Filter" />
     </list>
+    <writeAnnotations>
+      <writeAnnotation name="love.forte.common.ioc.annotation.Depend" />
+    </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">

@@ -18,4 +18,8 @@ public class Constant {
     public static BotSender sender;
     //文件目录的路径
     public static String parentPath;
+    //Bot开关机状态的变量
+    public static boolean BotState=false;
+    //色图的简易请求拦截锁,true代表解锁反之上锁
+    public static boolean StLock=true;
 }
