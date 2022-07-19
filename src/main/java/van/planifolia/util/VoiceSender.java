@@ -45,7 +45,7 @@ public class VoiceSender {
             String dwMusic="";
             //下载音乐，
             try {
-                dwMusic=SourceDownloader.dowLoadMusic(sonResourcesValue,"","");
+                dwMusic=SourceDownloader.dowLoadMusic(sonResourcesValue,"temp","");
             }catch (Exception e){
                 sender.sendGroupMsg(groupMsg.getGroupInfo(),"网络波动下载音乐失败,可能是资源丢失或者没有版权！");
             }

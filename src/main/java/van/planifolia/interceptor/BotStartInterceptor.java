@@ -1,6 +1,7 @@
 package van.planifolia.interceptor;
 
 import love.forte.common.ioc.annotation.Beans;
+import love.forte.simbot.bot.Bot;
 import love.forte.simbot.core.intercept.FixedRangeGroupedListenerInterceptor;
 import love.forte.simbot.intercept.InterceptionType;
 import love.forte.simbot.listener.ListenerInterceptContext;
@@ -31,10 +32,6 @@ public class BotStartInterceptor extends FixedRangeGroupedListenerInterceptor {
     protected InterceptionType doIntercept(@NotNull ListenerInterceptContext context, @Nullable String group) {
         //如果收到消息为开机
         if("开机".equals(Objects.requireNonNull(context.getMsgGet().getText()).trim())){
-            //如果已经开机我们不妨直接阻塞一波不让他发出开机啦那个消息
-            if(Constant.BotState){
-                return InterceptionType.HEAD_OFF;
-            }
             //如果收到开机的消息则将BotState置为true，然后放行
             Constant.BotState=true;
             return InterceptionType.PASS;

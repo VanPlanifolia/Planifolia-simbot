@@ -66,4 +66,18 @@ public interface UrlRequestService {
      */
     void getDailyFortune(Sender sender,GroupMsg groupMsg);
 
+    /**
+     * 点歌
+     */
+    void song(Sender sender,GroupMsg groupMsg);
+
+    /**
+     * 发送点歌语音
+     */
+    void sendMusic(Sender sender,GroupMsg groupMsg);
+
+    /**
+     * 万能搜索
+     */
+    void searchSourceForImage(GroupMsg groupMsg,Sender sender);
 }

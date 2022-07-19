@@ -6,13 +6,19 @@ import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.ListenGroup;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.events.GroupMsg;
+import love.forte.simbot.api.message.results.GroupList;
+import love.forte.simbot.api.message.results.SimpleGroupInfo;
+import love.forte.simbot.api.sender.Getter;
 import love.forte.simbot.api.sender.Sender;
 import love.forte.simbot.api.sender.Setter;
 import love.forte.simbot.filter.MatchType;
+import van.planifolia.service.GroupToolService;
 import van.planifolia.service.ManagerService;
 import van.planifolia.service.UrlRequestService;
 import van.planifolia.util.Constant;
+
 import javax.swing.filechooser.FileSystemView;
+import java.util.Iterator;
 
 /**
  * 群组监听的类，监听群组中的消息去调用对应的service相当于controller。
@@ -30,6 +36,8 @@ public class GroupListener {
     public UrlRequestService urlRequestService;
     @Depend
     public ManagerService managerService;
+    @Depend
+    public GroupToolService groupToolService;
     /**
      * 复读的listener，做为示范
      * @Filter 消息过滤器注解，其中value作为方法触发关键字，matchType作为匹配形式，具体用法建议去看框架作者的api文档
@@ -61,10 +69,17 @@ public class GroupListener {
      */
     @OnGroup
     @Filter(value = "开机",trim = true,atBot = true)
-    public void onBot(GroupMsg groupMsg,Sender sender){
+    public void onBot(GroupMsg groupMsg, Sender sender, Getter getter){
         //获取本地的桌面路径保存到常量工具类中
         if (Constant.parentPath==null){ Constant.parentPath = FileSystemView.getFileSystemView()
                 .getHomeDirectory().getAbsolutePath(); }
+
+        //拿到群组信息的迭代器
+        Iterator<SimpleGroupInfo> iterator = getter.getGroupList().getResults().iterator();
+        //便利所有群组，加入到list中
+        while (iterator.hasNext()){
+            Constant.groupList.add(iterator.next().getGroupCode());
+        }
         sender.sendGroupMsg(groupMsg.getGroupInfo(),"开机啦！");
     }
     /**
@@ -148,4 +163,60 @@ public class GroupListener {
     public void getDailyFortune(GroupMsg groupMsg,Sender sender){
         urlRequestService.getDailyFortune(sender, groupMsg);
     }
+
+    /**
+     * 点歌
+     */
+    @OnGroup
+    @Filter(value = "/点歌",matchType = MatchType.CONTAINS)
+    public synchronized void  song(GroupMsg groupMsg,Sender sender){
+        urlRequestService.song(sender, groupMsg);
+    }
+
+    /**
+     * 发送
+     */
+    @OnGroup
+    @Filter(atBot = true)
+    public void sendMusic(GroupMsg groupMsg,Sender sender){
+        urlRequestService.sendMusic(sender, groupMsg);
+    }
+
+    /**
+     * 万能搜索
+     */
+    @OnGroup
+    @Filter(value = "/搜索",matchType = MatchType.CONTAINS)
+    public void searchSourceForImage(GroupMsg groupMsg,Sender sender){
+        urlRequestService.searchSourceForImage(groupMsg, sender);
+    }
+
+    /**
+     * 计时器
+     */
+    @OnGroup
+    @Filter(value = "/Timer" ,matchType = MatchType.CONTAINS)
+    @Filter(value = "/timer" ,matchType = MatchType.CONTAINS)
+    public void requestForTimer(GroupMsg groupMsg, Sender sender){
+        groupToolService.requestTimer(groupMsg, sender);
+    }
+    /**
+     * 计时器列表
+     */
+    @OnGroup
+    @Filter(value = "/ls")
+    @Filter(value = "计时器队列")
+    public void timerList(GroupMsg groupMsg,Sender sender){
+        groupToolService.timerList(groupMsg, sender);
+    }
+    /**
+     * 关闭一个计时器
+     */
+    @OnGroup
+    @Filter(value = "/stop" ,matchType = MatchType.CONTAINS)
+    @Filter(value = "/Stop" ,matchType = MatchType.CONTAINS)
+    public void stopTimer(GroupMsg groupMsg, Sender sender){
+        groupToolService.stopTimer(groupMsg, sender);
+    }
+
 }

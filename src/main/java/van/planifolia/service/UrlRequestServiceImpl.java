@@ -61,4 +61,19 @@ public class UrlRequestServiceImpl implements UrlRequestService{
     public void getDailyFortune(Sender sender, GroupMsg groupMsg) {
         urlRequestAction.getDailyFortune(groupMsg, sender);
     }
+
+    @Override
+    public void song(Sender sender, GroupMsg groupMsg) {
+        urlRequestAction.song(groupMsg, sender);
+    }
+
+    @Override
+    public void sendMusic(Sender sender, GroupMsg groupMsg) {
+        urlRequestAction.sendMusic(groupMsg, sender);
+    }
+
+    @Override
+    public void searchSourceForImage(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.searchSourceForImage(groupMsg, sender);
+    }
 }

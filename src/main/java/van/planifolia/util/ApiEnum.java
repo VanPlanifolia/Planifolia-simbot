@@ -20,6 +20,15 @@ public enum ApiEnum {
     RandomTx("RandomTx","http://api.btstu.cn/sjtx/api.php?lx=c1&format=json"),
     //每日运势api
     Fortune("Fortune","https://api.fanlisky.cn/api/qr-fortune/get/"),
+    //点歌api
+    SongMessage("SongMessage","https://music.cyrilstudio.top/search?keywords=MUSICNAME&limit=20"),
+    //获取源的api
+    SongSourceSpApi("songSourceSpApi","http://music.163.com/song/media/outer/url?id=SONGID.mp3"),
+    //万能搜索的api
+    SourceSearch("SourceSearch","https://saucenao.com/search.php?output_type=2&api_key=724da2fccba6a6c519cd0998a1cca6228935ec1a&numres=3&url="),
+    //新闻的api
+    DailyNews("DailyNews","https://api.vvhan.com/api/60s"),
+
 
     ;
 

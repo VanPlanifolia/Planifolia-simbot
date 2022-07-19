@@ -22,4 +22,8 @@ public class Constant {
     public static boolean BotState=false;
     //色图的简易请求拦截锁,true代表解锁反之上锁
     public static boolean StLock=true;
+    //歌单信息
+    public static List<String> songidList=new ArrayList<>();
+    //点歌锁
+    public static boolean songLock=false;
 }

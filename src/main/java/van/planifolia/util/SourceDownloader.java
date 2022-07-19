@@ -99,7 +99,7 @@ public class SourceDownloader {
         //缓冲流
         BufferedInputStream in = new BufferedInputStream(con.getInputStream());
         //文件名字
-        filePath = Constant.parentPath+"\\"+musName+"-"+musArt + ".mp3";
+        filePath = Constant.parentPath+musName+"-"+musArt + ".mp3";
         //字节缓冲流下写出文件
         BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(filePath));
         byte[] buffer = new byte[1024*8];

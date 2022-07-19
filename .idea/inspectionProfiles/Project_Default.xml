@@ -35,6 +35,7 @@
           <option value="http://tiles.apache.org/" />
           <option value="http://api.mtyqx.cn" />
           <option value="http://api.btstu.cn" />
+          <option value="http://music.163.com" />
         </list>
       </option>
     </inspection_tool>

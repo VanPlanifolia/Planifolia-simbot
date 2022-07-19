@@ -24,43 +24,45 @@ public interface UrlRequestAction {
 
     /**
      * 随机二次元图片
-     * @param groupMsg
-     * @param sender
      */
     void getRandomImageECY(GroupMsg groupMsg, Sender sender);
 
     /**
      * 随机Men图片
-     * @param groupMsg
-     * @param sender
      */
     void getRandomImageMen(GroupMsg groupMsg,Sender sender);
 
     /**
      * 随机骚话
-     * @param groupMsg
-     * @param sender
      */
     void getRandomHitokoto(GroupMsg groupMsg, Sender sender);
 
     /**
      * 历史上的今天
-     * @param groupMsg
-     * @param sender
      */
     void getTodayForHis(GroupMsg groupMsg,Sender sender);
 
     /**
      * 获取随机头像
-     * @param groupMsg
-     * @param sender
      */
     void getRandomImageTx(GroupMsg groupMsg,Sender sender);
 
     /**
      * 每日占卜
-     * @param groupMsg
-     * @param sender
      */
     void getDailyFortune(GroupMsg groupMsg,Sender sender);
+
+    /**
+     * 点歌
+     */
+    void song(GroupMsg groupMsg,Sender sender);
+
+    /**
+     * 发送语音
+     */
+    void sendMusic(GroupMsg groupMsg,Sender sender);
+    /**
+     * 万能搜索
+     */
+    void searchSourceForImage(GroupMsg groupMsg,Sender sender);
 }

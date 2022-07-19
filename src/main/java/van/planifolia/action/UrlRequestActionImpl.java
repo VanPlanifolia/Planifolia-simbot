@@ -1,13 +1,12 @@
 package van.planifolia.action;
 
 import catcode.CatCodeUtil;
+import catcode.Neko;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import love.forte.common.ioc.annotation.Beans;
 import love.forte.common.ioc.annotation.Depend;
 import love.forte.common.utils.Carrier;
-import love.forte.simbot.annotation.Filter;
-import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.MessageContent;
 import love.forte.simbot.api.message.MessageContentBuilder;
 import love.forte.simbot.api.message.MessageContentBuilderFactory;
@@ -16,15 +15,17 @@ import love.forte.simbot.api.message.events.GroupMsg;
 import love.forte.simbot.api.message.events.MessageGet;
 import love.forte.simbot.api.sender.Sender;
 import love.forte.simbot.api.sender.Setter;
-import love.forte.simbot.filter.MatchType;
 import van.planifolia.util.*;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import javax.swing.filechooser.FileSystemView;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimerTask;
+import java.util.*;
 
 /**
  * Action类的具体实现类，里面用于处理Listener中的请求并且发送消息.
@@ -169,8 +170,6 @@ public class UrlRequestActionImpl implements UrlRequestAction{
 
     /**
      * 随机二次元图片
-     * @param groupMsg
-     * @param sender
      */
     @Override
     public void getRandomImageECY(GroupMsg groupMsg, Sender sender){
@@ -250,8 +249,6 @@ public class UrlRequestActionImpl implements UrlRequestAction{
 
     /**
      * 历史上的今天
-     * @param groupMsg
-     * @param sender
      */
     @Override
     public void getTodayForHis(GroupMsg groupMsg, Sender sender) {
@@ -288,8 +285,6 @@ public class UrlRequestActionImpl implements UrlRequestAction{
 
     /**
      * 获取随机头像
-     * @param groupMsg
-     * @param sender
      */
     @Override
     public void getRandomImageTx(GroupMsg groupMsg, Sender sender) {
@@ -351,5 +346,181 @@ public class UrlRequestActionImpl implements UrlRequestAction{
             sender.sendGroupMsg(groupMsg.getGroupInfo(),mc1);
             sender.sendGroupMsg(groupMsg.getGroupInfo(),mc2);
         }
+    }
+
+    //点歌的计时器
+    TimerPlus songTimer=new TimerPlus();
+    public synchronized void song(GroupMsg groupMsg,Sender sender) {
+        //一次新的请求先终止之前的回收器,然后清理上一次的请求信息
+        if (songTimer.getStartTime()!=null){
+            songTimer.cancel();
+            songTimer=new TimerPlus();
+        }
+        Constant.songidList.clear();
+        //api的url
+        String songUrl=ApiEnum.SongMessage.getValue();
+        //消息正文
+        String msgContext= groupMsg.getText();
+        //音乐的name，音乐资源链接，
+        String musicName=null;
+        String songSourceUrl="";
+        String musicurl="";
+        String musicid="";
+        String [] msgsplit=msgContext.split(" ");
+        //消息构建器
+        MessageContentBuilder mcBuilder = messageContentBuilderFactory.getMessageContentBuilder();
+        //处理字符串与标签
+        try{
+            musicName=msgsplit[1];
+        }catch (Exception e){
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),"格式不对哦，点歌格式为/点歌+空格+歌曲名字");
+            return;
+        }
+        if(musicName!=null && !musicName.isEmpty()){
+            songUrl=songUrl.replace("MUSICNAME",musicName);
+        }else {
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),"歌曲名字非法！");
+            return;
+        }
+        //拿到网页里面的信息
+        String songResult=HttpClient.doGetMessage(songUrl);
+        //获取其中的Json对象
+        JSONObject object=JSONObject.parseObject(songResult);
+        //获取杰森里面的data对象中的songs数组
+        JSONObject data=object.getJSONObject("result");
+        JSONArray songs=data.getJSONArray("songs");
+        JSONObject song = null;
+        String[] musicMsg=new String[songs.size()+1];
+        //遍历拿到所有的歌曲信息
+        mcBuilder.text("歌曲列表：\n");
+        StringBuilder musicMsgBuilder=new StringBuilder();
+        for (int i = 0; i < songs.size(); i++) {
+            //拿到song对象
+            song=songs.getJSONObject(i);
+            //构建消息String[]
+            musicMsgBuilder.append(i + 1).append(".").append(song.getString("name")).append("-").append(song.getJSONArray("artists").getJSONObject(0).getString("name")).append("\n");
+            //吧每一次构建的歌曲消息保存到对应的字符数组里
+            musicMsg[i]=musicMsgBuilder.toString();
+            //往list里面添加一个歌曲id
+            Constant.songidList.add(song.getString("id"));
+            //清空string builder
+            musicMsgBuilder.delete(0, musicMsgBuilder.length());
+        }
+        musicMsg[songs.size()]="\n  请@我,并且回复数字编号获取歌曲。";
+        //调取工具类去获取bufferedImage对象
+        BufferedImage image = StringToImage.stringToImg(musicMsg);
+        //创建一个临时的文件
+        File file=new File(FileSystemView.getFileSystemView() .getHomeDirectory().getAbsolutePath()+"\\temp.jpg");
+        //使用imageOutPutStream类来完成图片的输出
+        try {
+            ImageOutputStream ios= ImageIO.createImageOutputStream(file);
+            ImageIO.write(image,"jpg",ios);
+            //构建猫猫码。发送，关闭流删除文件
+            String imageNeko=catCodeUtil.toCat("image",true,"file="+file.getAbsolutePath());
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),imageNeko);
+            ios.close();
+        }catch (Exception e){}
+        //开启点歌监听锁
+        Constant.songLock=true;
+        //加入定时清理器
+        String finalMusicName = musicName;
+        songTimer.setStartTime(new Date());
+        TimerTask songTask=new TimerTask() {
+            @Override
+            public void run() {
+                sender.sendGroupMsg(groupMsg.getGroupInfo(),"歌单："+ finalMusicName +" 已被清理");
+                //清理id列表，关锁
+                Constant.songidList.clear();
+                songTimer.setStartTime(null);
+                Constant.songLock=false;
+            }
+        };
+        //15分钟自动销毁
+        songTimer.schedule(songTask,1000*15*60);
+    }
+
+    /**
+     * 发送点歌的方法
+     */
+    public void sendMusic(GroupMsg groupMsg,Sender sender){
+        String songSourceSpApi=ApiEnum.SongSourceSpApi.getValue();
+        System.out.println("进入方法");
+        //如果锁为关闭状态就直接退出
+        if(!Constant.songLock){
+            System.out.println("锁关闭了!");
+            return;
+        }else {
+            System.out.println("进入获取方法");
+            int id;
+            try {
+                id = Integer.parseInt(groupMsg.getText().trim());
+            }catch (Exception e){return;}
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),"正在获取...");
+            //拿到对应的歌曲id
+            String realId = Constant.songidList.get(id - 1);
+            //拿到歌曲的下载地址
+            String songSourceUrl=songSourceSpApi.replace("SONGID",realId);
+            VoiceSender.getMusicSources(groupMsg, sender,songSourceUrl);
+        }
+    }
+
+    /**
+     * 按图片查询资源
+     */
+    public void searchSourceForImage(GroupMsg groupMsg,Sender sender){
+        Map<String,String> tempMap=new HashMap<>();
+        MessageContentBuilder builder = messageContentBuilderFactory.getMessageContentBuilder();//消息构建器
+        //api的地址
+        String apiUrl=ApiEnum.SourceSearch.getValue();
+        //获取消息正文里面的图片信息
+        List<Neko> cats = groupMsg.getMsgContent().getCats();
+        //按照指令格式我们可以拿到index为1的Neko码也就是图片的neko码，（这样写显然不够优雅）
+        Neko neko = null;
+        try {
+            neko = cats.get(1);
+        }catch (Exception e){
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),"使用格式不对奥，请在指令后面添加一个图片，只支持合并发送");
+        }
+        //拿到图片的url我们就可以进行请求操作了
+        assert neko != null;
+        String imageUrl=neko.get("url");
+        //拿到结果转化成json对象
+        String result=HttpClient.doGetMessage(apiUrl+imageUrl);
+        JSONObject allResult=JSONObject.parseObject(result);
+        JSONArray resultsArray = allResult.getJSONArray("results");
+        JSONObject trageObject= (JSONObject) resultsArray.get(0);
+        //拿到检索结果的头信息
+        JSONObject headerObject=trageObject.getJSONObject("header");
+        //匹配百分比
+        String[] similarities = headerObject.getString("similarity").split("\\.");
+        int pers = Integer.parseInt(similarities[0]);
+        if (pers<=50){
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),"匹配度过低！");
+            return;
+        }
+        tempMap.put("similarity", headerObject.getString("similarity"));
+        //图片img
+        String getImgUrl=headerObject.getString("thumbnail").replace("\u0026","&");
+        //拿到data的json对象
+        JSONObject dataObject=trageObject.getJSONObject("data");
+        JSONArray ext_urls = dataObject.getJSONArray("ext_urls");
+        //压入第0个番剧信息的数组内容
+        tempMap.put("ext_url",ext_urls.getString(0));
+        //压入资源信息的名字
+        tempMap.put("source",dataObject.getString("source"));
+        //如果为视频的话我们就往map中存入在那一集哪一个时刻
+        try {
+            tempMap.put("part",dataObject.getString("part"));
+            tempMap.put("est_time", dataObject.getString("est_time"));
+        }catch (Exception e){}
+        //构建消息
+        MessageContent mc=
+                builder.text("检索结果：\n")
+                        .text("匹配度："+tempMap.get("similarity")+"%\n")
+                        .text("标题："+tempMap.get("source")+"\n")
+                        .imageUrl(getImgUrl)
+                        .text("位置："+tempMap.get("part")+"--"+tempMap.get("est_time")+"\n")
+                        .text("详细信息："+tempMap.get("ext_url")).build();
+        sender.sendGroupMsg(groupMsg.getGroupInfo(),mc);
     }
 }
