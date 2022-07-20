@@ -80,4 +80,12 @@ public interface UrlRequestService {
      * 万能搜索
      */
     void searchSourceForImage(GroupMsg groupMsg,Sender sender);
+    /**
+     * 番剧搜索
+     */
+    void serachCartoonForName(GroupMsg groupMsg,Sender sender);
+    /**
+     * 番剧发送
+     */
+    void sendCartoon(GroupMsg groupMsg,Sender sender);
 }

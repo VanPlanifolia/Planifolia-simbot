@@ -76,4 +76,14 @@ public class UrlRequestServiceImpl implements UrlRequestService{
     public void searchSourceForImage(GroupMsg groupMsg, Sender sender) {
         urlRequestAction.searchSourceForImage(groupMsg, sender);
     }
+
+    @Override
+    public void serachCartoonForName(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.serachCartoonForName(groupMsg, sender);
+    }
+
+    @Override
+    public void sendCartoon(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.sendCartoon(groupMsg,sender);
+    }
 }

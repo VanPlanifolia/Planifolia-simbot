@@ -218,5 +218,17 @@ public class GroupListener {
     public void stopTimer(GroupMsg groupMsg, Sender sender){
         groupToolService.stopTimer(groupMsg, sender);
     }
-
+    /**
+     * 番剧搜索
+     */
+    @OnGroup
+    @Filter(value = "/番剧搜索",matchType = MatchType.CONTAINS)
+    public void serachCartoonForName(GroupMsg groupMsg,Sender sender){
+        urlRequestService.serachCartoonForName(groupMsg, sender);
+    }
+    @OnGroup
+    @Filter(atBot = true)
+    public void sendCartoon(GroupMsg groupMsg,Sender sender){
+        urlRequestService.sendCartoon(groupMsg, sender);
+    }
 }

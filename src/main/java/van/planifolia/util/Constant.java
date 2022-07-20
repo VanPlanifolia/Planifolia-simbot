@@ -26,4 +26,8 @@ public class Constant {
     public static List<String> songidList=new ArrayList<>();
     //点歌锁
     public static boolean songLock=false;
+    //搜索动漫锁
+    public static boolean dmLock=false;
+    //动漫临时url
+    public static String dmUrl;
 }

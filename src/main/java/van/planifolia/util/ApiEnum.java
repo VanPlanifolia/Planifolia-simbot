@@ -28,6 +28,8 @@ public enum ApiEnum {
     SourceSearch("SourceSearch","https://saucenao.com/search.php?output_type=2&api_key=724da2fccba6a6c519cd0998a1cca6228935ec1a&numres=3&url="),
     //新闻的api
     DailyNews("DailyNews","https://api.vvhan.com/api/60s"),
+    //樱花动漫的api
+    YhCartoon("","http://api.xn--7gqa009h.top/api/yhdm?msg=DMNAME&b="),
 
 
     ;

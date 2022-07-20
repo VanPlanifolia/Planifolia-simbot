@@ -65,4 +65,12 @@ public interface UrlRequestAction {
      * 万能搜索
      */
     void searchSourceForImage(GroupMsg groupMsg,Sender sender);
+    /**
+     * 樱花动漫
+     */
+    void serachCartoonForName(GroupMsg groupMsg,Sender sender);
+    /**
+     * 发送动漫
+     */
+    void sendCartoon(GroupMsg groupMsg,Sender sender);
 }

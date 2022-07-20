@@ -523,4 +523,57 @@ public class UrlRequestActionImpl implements UrlRequestAction{
                         .text("详细信息："+tempMap.get("ext_url")).build();
         sender.sendGroupMsg(groupMsg.getGroupInfo(),mc);
     }
+
+    /**
+     * 按照名字搜索动漫播放链接
+     * @param groupMsg
+     * @param sender
+     */
+    TimerPlus dmTimer=new TimerPlus(new Date());
+    @Override
+    public void serachCartoonForName(GroupMsg groupMsg, Sender sender) {
+        //一次新的请求先终止之前的回收器,然后清理上一次的请求信息
+        if (dmTimer.getStartTime()!=null){
+            dmTimer.cancel();
+            dmTimer=new TimerPlus();
+        }
+        String apiUrl=ApiEnum.YhCartoon.getValue();
+        //变量提升作用域
+        String dmName = null;
+        //取到搜索的动漫名
+        String[] split = groupMsg.getText().split(" ");
+        try{
+            dmName=split[1];
+        }catch (Exception e){
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),"指令格式不对奥，指令格式为：指令+空格+需要搜索的番剧名！");
+            return;
+        }
+        Constant.dmUrl=apiUrl.replace("DMNAME",dmName);
+        String result=HttpClient.doGetMessage(Constant.dmUrl);
+        result=result.replace("——————樱花动漫——————","搜索结果:");
+        sender.sendGroupMsg(groupMsg.getGroupInfo(),result+"\n请@我并且发送对应的编号来获取内容");
+        Constant.dmLock=true;
+        songTimer.setStartTime(new Date());
+        String finalDmName = dmName;
+        TimerTask songTask=new TimerTask() {
+            @Override
+            public void run() {
+                sender.sendGroupMsg(groupMsg.getGroupInfo(),"动漫："+ finalDmName +" 已被清理");
+                //清理番剧url，关锁
+                Constant.dmUrl=null;
+                dmTimer.setStartTime(null);
+                Constant.dmLock=false;
+            }
+        };
+        //2分钟自动销毁
+        songTimer.schedule(songTask,1000*2*60);
+    }
+
+    @Override
+    public void sendCartoon(GroupMsg groupMsg, Sender sender) {
+        String id = groupMsg.getText().trim();
+        if(Constant.dmLock){
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),HttpClient.doGetMessage(Constant.dmUrl+id));
+        }
+    }
 }
