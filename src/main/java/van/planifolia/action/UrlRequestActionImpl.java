@@ -529,7 +529,7 @@ public class UrlRequestActionImpl implements UrlRequestAction{
      * @param groupMsg
      * @param sender
      */
-    TimerPlus dmTimer=new TimerPlus(new Date());
+    TimerPlus dmTimer=new TimerPlus();
     @Override
     public void serachCartoonForName(GroupMsg groupMsg, Sender sender) {
         //一次新的请求先终止之前的回收器,然后清理上一次的请求信息
@@ -548,10 +548,13 @@ public class UrlRequestActionImpl implements UrlRequestAction{
             sender.sendGroupMsg(groupMsg.getGroupInfo(),"指令格式不对奥，指令格式为：指令+空格+需要搜索的番剧名！");
             return;
         }
+        //将番剧的信息暂时保存在常量类中
         Constant.dmUrl=apiUrl.replace("DMNAME",dmName);
+        //获取请求结果，并且处理一下发送
         String result=HttpClient.doGetMessage(Constant.dmUrl);
         result=result.replace("——————樱花动漫——————","搜索结果:");
         sender.sendGroupMsg(groupMsg.getGroupInfo(),result+"\n请@我并且发送对应的编号来获取内容");
+        //开锁
         Constant.dmLock=true;
         songTimer.setStartTime(new Date());
         String finalDmName = dmName;
