@@ -6,7 +6,6 @@ import love.forte.simbot.annotation.Filter;
 import love.forte.simbot.annotation.ListenGroup;
 import love.forte.simbot.annotation.OnGroup;
 import love.forte.simbot.api.message.events.GroupMsg;
-import love.forte.simbot.api.message.results.GroupList;
 import love.forte.simbot.api.message.results.SimpleGroupInfo;
 import love.forte.simbot.api.sender.Getter;
 import love.forte.simbot.api.sender.Sender;
@@ -46,7 +45,7 @@ public class GroupListener {
      * @param sender 送信器
      */
     @OnGroup
-    @Filter(value = "复读",matchType = MatchType.CONTAINS)
+    @Filter(value = "复读")
     public void repeat(GroupMsg groupMsg, Sender sender){
         urlRequestService.repeat(groupMsg, sender);
     }
@@ -230,5 +229,13 @@ public class GroupListener {
     @Filter(atBot = true)
     public void sendCartoon(GroupMsg groupMsg,Sender sender){
         urlRequestService.sendCartoon(groupMsg, sender);
+    }
+    /**
+     * 发送可达鸭图片
+     */
+    @OnGroup
+    @Filter(value = "/可达鸭",matchType = MatchType.CONTAINS)
+    public void makeKeDaYa(GroupMsg groupMsg,Sender sender){
+        urlRequestService.makeKeDaYa(groupMsg,sender);
     }
 }

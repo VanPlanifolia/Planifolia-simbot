@@ -1,13 +1,13 @@
 package van.planifolia.interceptor;
 
 import love.forte.common.ioc.annotation.Beans;
-import love.forte.simbot.bot.Bot;
 import love.forte.simbot.core.intercept.FixedRangeGroupedListenerInterceptor;
 import love.forte.simbot.intercept.InterceptionType;
 import love.forte.simbot.listener.ListenerInterceptContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import van.planifolia.util.Constant;
+
 import java.util.Objects;
 
 /**

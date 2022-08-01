@@ -11,10 +11,18 @@ import van.planifolia.util.TimerPlus;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * 群组工具的实现类
+ * @author Planifolia.Van
+ */
 @Beans
 public class GroupToolActionImpl implements GroupToolAction{
     int timeLength;
-    //    TimerPlus t[]=new TimerPlus[5];
+
+    /**
+     * 计时器任务的Map
+     * TimerPlus t[]=new TimerPlus[5];
+     */
     Map<String, TimerPlus> timeMap=new HashMap<>();
     int VacancyNumber=5;
     String TimerRemark=null;
@@ -48,7 +56,8 @@ public class GroupToolActionImpl implements GroupToolAction{
             Date dd=new Date();
             SimpleDateFormat sim=new SimpleDateFormat("HH:mm:ss");
             String time=sim.format(dd);
-            MessageContentBuilder builder1 = builderFactory.getMessageContentBuilder();//消息构建器
+            //消息构建器
+            MessageContentBuilder builder1 = builderFactory.getMessageContentBuilder();
             TimerPlus timerPlus=new TimerPlus(new Date());
             timerPlus.setName(TimerRemark);
             //为了方式timeMap中的任务被覆盖，我们就进行一次判断如果此时申请的任务key已经在map中存在我们就直接结束这个任务
@@ -83,7 +92,8 @@ public class GroupToolActionImpl implements GroupToolAction{
             Date dd=new Date();
             SimpleDateFormat sim=new SimpleDateFormat("HH:mm:ss");
             String time=sim.format(dd);
-            MessageContentBuilder builder1 = builderFactory.getMessageContentBuilder();//消息构建器
+            //消息构建器
+            MessageContentBuilder builder1 = builderFactory.getMessageContentBuilder();
             //创建一个tp对象保存到map中
             TimerPlus timerPlus=new TimerPlus(new Date());
             TimerRemark= String.valueOf(timerPlus.hashCode());
@@ -149,7 +159,8 @@ public class GroupToolActionImpl implements GroupToolAction{
         TimerPlus timerPlus=timeMap.get(name);
         if (timerPlus!=null){
             timerPlus.cancel();
-            MessageContentBuilder builder3 = builderFactory.getMessageContentBuilder();//消息构建器
+            //消息构建器
+            MessageContentBuilder builder3 = builderFactory.getMessageContentBuilder();
             MessageContent msg1 = builder3.at(groupMsg.getAccountInfo().getAccountCode()).text("任务:"+ timeMap.get(name).hashCode()+"已终止！").build();
             sender.sendGroupMsg(groupMsg.getGroupInfo(),msg1);
             //当然终止完任务不要忘记从map中移除这一个对象

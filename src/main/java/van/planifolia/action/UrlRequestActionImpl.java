@@ -2,6 +2,7 @@ package van.planifolia.action;
 
 import catcode.CatCodeUtil;
 import catcode.Neko;
+import cn.hutool.core.io.IoUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import love.forte.common.ioc.annotation.Beans;
@@ -21,7 +22,7 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 import javax.swing.filechooser.FileSystemView;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -350,7 +351,8 @@ public class UrlRequestActionImpl implements UrlRequestAction{
 
     //点歌的计时器
     TimerPlus songTimer=new TimerPlus();
-    public synchronized void song(GroupMsg groupMsg,Sender sender) {
+    @Override
+    public synchronized void song(GroupMsg groupMsg, Sender sender) {
         //一次新的请求先终止之前的回收器,然后清理上一次的请求信息
         if (songTimer.getStartTime()!=null){
             songTimer.cancel();
@@ -442,7 +444,8 @@ public class UrlRequestActionImpl implements UrlRequestAction{
     /**
      * 发送点歌的方法
      */
-    public void sendMusic(GroupMsg groupMsg,Sender sender){
+    @Override
+    public void sendMusic(GroupMsg groupMsg, Sender sender){
         String songSourceSpApi=ApiEnum.SongSourceSpApi.getValue();
         System.out.println("进入方法");
         //如果锁为关闭状态就直接退出
@@ -467,7 +470,8 @@ public class UrlRequestActionImpl implements UrlRequestAction{
     /**
      * 按图片查询资源
      */
-    public void searchSourceForImage(GroupMsg groupMsg,Sender sender){
+    @Override
+    public void searchSourceForImage(GroupMsg groupMsg, Sender sender){
         Map<String,String> tempMap=new HashMap<>();
         MessageContentBuilder builder = messageContentBuilderFactory.getMessageContentBuilder();//消息构建器
         //api的地址
@@ -571,12 +575,62 @@ public class UrlRequestActionImpl implements UrlRequestAction{
         //2分钟自动销毁
         songTimer.schedule(songTask,1000*2*60);
     }
-
     @Override
     public void sendCartoon(GroupMsg groupMsg, Sender sender) {
         String id = groupMsg.getText().trim();
         if(Constant.dmLock){
             sender.sendGroupMsg(groupMsg.getGroupInfo(),HttpClient.doGetMessage(Constant.dmUrl+id));
         }
+    }
+    @Override
+    public void makeKeDaYa(GroupMsg groupMsg, Sender sender) {
+        //获取需要制作的消息内容
+        String[] msgSplit = groupMsg.getText().split(" ");
+        //提取的变量，分别为可达鸭左 右 文字,图片byte数组,临时文件变量
+        String msgLeft=null;
+        String msgRight=null;
+        byte[] bytes = new byte[0];
+        File file=null;
+        InputStream is = null;
+        OutputStream os = null;
+        try{
+            msgLeft=msgSplit[1];
+            msgRight=msgSplit[2];
+        }catch (Exception e){
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),"指令格式不对奥，具体格式如下：指令+空格+左边内容+空格+右边内容");
+        }
+        try {
+            bytes = KdyImageMaker.makeImage(msgLeft, msgRight);
+        } catch (IOException e) {
+            sender.sendGroupMsg(groupMsg.getGroupInfo(),"图片制作失败");
+        }
+        /*
+        根据byte数组制作图片的方式：
+        1.创建input流读取byte数组内容
+        2.创建output流关联我们要输出的文件
+        3.不妨使用工具类来将in流里面的读取到out流中
+        4.关闭流
+         */
+        try {
+            file=new File(Constant.parentPath+"/temp.gif");
+            is=new ByteArrayInputStream(bytes);
+            os=new FileOutputStream(file);
+            IoUtil.copy(is,os);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                assert is != null;
+                is.close();
+                assert os != null;
+                os.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        String image=catCodeUtil.toCat("image",true,"file="+file.getAbsolutePath());
+        sender.sendGroupMsg(groupMsg.getGroupInfo(),image);
+
     }
 }

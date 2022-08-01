@@ -1,11 +1,10 @@
 package van.planifolia;
+
 import love.forte.simbot.annotation.SimbotApplication;
 import love.forte.simbot.annotation.SimbotResource;
 import love.forte.simbot.core.SimbotApp;
 import love.forte.simbot.core.SimbotContext;
 import van.planifolia.util.Constant;
-
-import java.util.Objects;
 
 /**
  * Planifolia-simbot 的启动类，使用了ForteScarlet提供的simbot框架特此感谢。

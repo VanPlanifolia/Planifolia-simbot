@@ -73,4 +73,8 @@ public interface UrlRequestAction {
      * 发送动漫
      */
     void sendCartoon(GroupMsg groupMsg,Sender sender);
+    /**
+     * 可达鸭图片
+     */
+    void makeKeDaYa(GroupMsg groupMsg,Sender sender);
 }

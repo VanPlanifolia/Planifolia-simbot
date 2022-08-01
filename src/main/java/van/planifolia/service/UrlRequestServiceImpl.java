@@ -86,4 +86,9 @@ public class UrlRequestServiceImpl implements UrlRequestService{
     public void sendCartoon(GroupMsg groupMsg, Sender sender) {
         urlRequestAction.sendCartoon(groupMsg,sender);
     }
+
+    @Override
+    public void makeKeDaYa(GroupMsg groupMsg, Sender sender) {
+        urlRequestAction.makeKeDaYa(groupMsg,sender);
+    }
 }

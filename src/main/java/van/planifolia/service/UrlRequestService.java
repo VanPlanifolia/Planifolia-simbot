@@ -88,4 +88,8 @@ public interface UrlRequestService {
      * 番剧发送
      */
     void sendCartoon(GroupMsg groupMsg,Sender sender);
+    /**
+     * 可达鸭图片
+     */
+    void makeKeDaYa(GroupMsg groupMsg,Sender sender);
 }
